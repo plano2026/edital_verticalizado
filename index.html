@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edital Verticalizado - Missão PCSC 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .progress-transition {
+            transition: width 0.5s ease-in-out;
+        }
+        .subject-card {
+            transition: transform 0.2s;
+        }
+        .subject-card:hover {
+            transform: translateY(-2px);
+        }
+        input[type="checkbox"]:checked + span {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans text-gray-900">
+
+    <header class="bg-slate-900 text-white py-8 px-4 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold">Missão PCSC 2025</h1>
+                    <p class="text-slate-400">Edital Verticalizado Interativo</p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 min-w-[250px]">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>Progresso Geral</span>
+                        <span id="overall-percentage">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-3">
+                        <div id="overall-bar" class="bg-blue-500 h-3 rounded-full progress-transition" style="width: 0%"></div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2 text-center" id="overall-count">0 de 0 tópicos concluídos</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-4 md:p-8">
+        <div id="subjects-container" class="grid gap-6">
+            <!-- As disciplinas serão inseridas aqui via JS -->
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-6 mt-12 text-center text-gray-500 text-sm">
+        <p>Projeto Missão - Carreiras Policiais &bull; 2025</p>
+        <button onclick="resetProgress()" class="mt-4 text-red-500 hover:text-red-700 font-medium">
+            <i class="fas fa-redo-alt mr-1"></i> Resetar Todo o Progresso
+        </button>
+    </footer>
+
+    <script>
+        const editalData = [
+            {
+                title: "Noções de Direito Penal",
+                topics: [
+                    "Introdução Ao Direito Penal (Conceito, características, função)",
+                    "Princípios do direito penal",
+                    "Conceito de crime e seus elementos",
+                    "Classificações do crime",
+                    "Ação e omissão",
+                    "Sujeito ativo e sujeito passivo",
+                    "Bem jurídico",
+                    "Tipicidade, Ilicitude, Culpabilidade, Punibilidade",
+                    "Erro de tipo e erro de proibição",
+                    "Crime consumado, Tentativa, Desistência voluntária",
+                    "Arrependimento eficaz e posterior, Crime impossível",
+                    "Concurso de pessoas",
+                    "Concurso de crimes",
+                    "Extinção da punibilidade",
+                    "Crimes contra a pessoa",
+                    "Crimes contra o patrimônio",
+                    "Crimes contra a dignidade sexual",
+                    "Crimes contra a fé pública",
+                    "Crimes contra a administração pública",
+                    "Crimes contra o Estado democrático de direito"
+                ]
+            },
+            {
+                title: "Noções de Direito Processual Penal",
+                topics: [
+                    "Princípios gerais do processo penal",
+                    "Sistemas processuais penais",
+                    "Funções de Polícia Administrativa e Judiciária",
+                    "Inquérito policial",
+                    "Ação penal",
+                    "Provas (art. 155 a 239 do CPP)",
+                    "Meios de prova e interceptações",
+                    "Busca e apreensão (art. 240 a 250 do CPP)",
+                    "Cadeia de custódia (física e virtual)",
+                    "Prisão (Conceito, espécies, mandado)",
+                    "Prisão em flagrante",
+                    "Prisão temporária",
+                    "Prisão preventiva",
+                    "Medidas cautelares diversas da prisão",
+                    "Fiança",
+                    "Uso de algemas (Súmula vinculante n. 11)",
+                    "Lei n. 7.960/1989 (Prisão temporária)",
+                    "Lei n. 12.037/2009 (Identificação criminal)",
+                    "Lei n. 12.830/2013 (Investigação pelo delegado)"
+                ]
+            },
+            {
+                title: "Noções de Direito Constitucional",
+                topics: [
+                    "Direito Constitucional e Constituição: conceito e classificação",
+                    "Princípios Fundamentais da CRFB/88",
+                    "Direitos e garantias fundamentais",
+                    "Direitos individuais e coletivos",
+                    "Remédios constitucionais (Habeas corpus, data, MS)",
+                    "Organização Político-Administrativa do Estado",
+                    "Poder Executivo, Legislativo e Judiciário",
+                    "Das funções essenciais à Justiça",
+                    "Defesa do Estado e das instituições democráticas",
+                    "Da segurança pública e sua organização",
+                    "Constituição do Estado de Santa Catarina"
+                ]
+            },
+            {
+                title: "Noções de Direito Administrativo",
+                topics: [
+                    "Conceito, fontes e princípios do Direito Administrativo",
+                    "Estado, governo e administração pública",
+                    "Administração direta e indireta",
+                    "Agentes públicos",
+                    "Poderes administrativos",
+                    "Serviços públicos",
+                    "Atos administrativos",
+                    "Licitação",
+                    "Responsabilidade civil do Estado",
+                    "Lei n. 8.429/1992 (Improbidade Administrativa)",
+                    "Lei n. 12.527/2011 (Acesso à Informação)",
+                    "Lei n. 13.709/2018 (LGPD)"
+                ]
+            },
+            {
+                title: "Noções de Direitos Humanos",
+                topics: [
+                    "O conceito de direitos humanos",
+                    "Noções gerais sobre Direitos Humanos",
+                    "Direitos humanos na ONU",
+                    "Direitos humanos na OEA",
+                    "Declaração Universal dos Direitos Humanos",
+                    "Corte Interamericana de Direitos Humanos",
+                    "Natureza jurídica da incorporação de normas internacionais",
+                    "Lei n. 13.060/2014",
+                    "Decreto n. 12.341/2024"
+                ]
+            },
+            {
+                title: "Legislação Institucional",
+                topics: [
+                    "Lei nº 14.735/2023 (Lei Orgânica Nacional PC)",
+                    "Lei n. 6.843/1986 (Estatuto da PC-SC)",
+                    "Lei Complementar Estadual n. 453/2009",
+                    "Lei Complementar Estadual n. 491/2010",
+                    "Lei Estadual n. 16.774/2015",
+                    "Lei Complementar Estadual n. 741/2019"
+                ]
+            },
+            {
+                title: "TI, Segurança Cibernética e Crimes Digitais",
+                topics: [
+                    "Redes: LAN, WAN, MAN, IP, GCNAT, P2P",
+                    "Protocolos: IPv4, IPv6, DNS, VPN, HTTP/S, FTP, etc",
+                    "Computação na Nuvem: conceitos e modelos",
+                    "Navegadores de internet",
+                    "Deep Web e Dark Web",
+                    "Telecomunicações: Sistemas móveis e ERBs",
+                    "Segurança: Vírus, worms, ataques e malwares",
+                    "Antivírus, firewall e autenticação multifator",
+                    "Investigação Digital: Código Hash e Metadados",
+                    "Criptografia e Serviços de Mensageria",
+                    "Dispositivos Móveis: Celulares e Tablets",
+                    "Teoria da Informação: dado, conhecimento, inteligência",
+                    "IA: Machine Learning, Redes Neurais e LLMs",
+                    "Criptoativos: Bitcoin, Blockchain e Rastreamento",
+                    "Crimes Cibernéticos: Conceito e Classificação",
+                    "Marco Civil da Internet (Lei 12.965/2014)"
+                ]
+            },
+            {
+                title: "Língua Portuguesa",
+                topics: [
+                    "Compreensão e interpretação de textos",
+                    "Reconhecimento de tipos e gêneros textuais",
+                    "Domínio da ortografia oficial",
+                    "Domínio dos mecanismos de coesão textual",
+                    "Emprego de tempos e modos verbais",
+                    "Morfossintaxe: classes de palavras",
+                    "Coordenação e Subordinação",
+                    "Pontuação",
+                    "Concordância verbal e nominal",
+                    "Regência verbal e nominal",
+                    "Emprego da crase",
+                    "Colocação pronominal",
+                    "Reescrita de frases e parágrafos",
+                    "Redação Oficial (Manual da Presidência)"
+                ]
+            },
+            {
+                title: "Raciocínio Lógico-Matemático",
+                topics: [
+                    "Lógica: proposições, conectivos, tabela verdade",
+                    "Argumentação, analogias e inferências",
+                    "Conjuntos e operações",
+                    "Números reais, porcentagem e juros",
+                    "Proporcionalidade direta e inversa",
+                    "Medidas de comprimento, área, volume e tempo",
+                    "Gráficos e tabelas",
+                    "Problemas aritméticos, geométricos e matriciais",
+                    "Contagem e probabilidade",
+                    "Progressão aritmética e geométrica",
+                    "Geometria básica (ângulos, polígonos, área)",
+                    "Estatística: média, moda, mediana e desvio padrão",
+                    "Plano cartesiano"
+                ]
+            },
+            {
+                title: "Noções de Contabilidade",
+                topics: [
+                    "Princípios e Estrutura Normativa (NBC PG 100)",
+                    "Escrituração Contábil (ITG 2000)",
+                    "Demonstrações Contábeis (NBC TG 26)",
+                    "Noções de Perícia (NBC TP 01)",
+                    "Fluxo de Caixa e DVA",
+                    "Direito Societário e Obrigações (Código Civil)",
+                    "Estatuto da Microempresa (LC 123/2006)"
+                ]
+            },
+            {
+                title: "Noções de Administração",
+                topics: [
+                    "Teoria da administração: eficiência, eficácia, papéis",
+                    "Funções: planejamento, organização, direção e controle",
+                    "Tipos de estrutura organizacional e departamentalização",
+                    "Sistemas de controle",
+                    "Planejamento estratégico: ferramentas e métodos",
+                    "Gestão da qualidade",
+                    "Gestão de projetos: ciclo de vida e indicadores"
+                ]
+            }
+        ];
+
+        function init() {
+            const container = document.getElementById('subjects-container');
+            const storedProgress = JSON.parse(localStorage.getItem('pcsc2025_progress') || '{}');
+
+            editalData.forEach((subject, sIdx) => {
+                const subjectId = `subject-${sIdx}`;
+                const checkedCount = subject.topics.filter((_, tIdx) => storedProgress[`${sIdx}-${tIdx}`]).length;
+                const progressPercent = Math.round((checkedCount / subject.topics.length) * 100);
+
+                const section = document.createElement('div');
+                section.className = "subject-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden";
+                
+                section.innerHTML = `
+                    <div class="p-5 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-50/50">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-blue-100 text-blue-600 w-10 h-10 rounded-lg flex items-center justify-center font-bold">
+                                ${sIdx + 1}
+                            </div>
+                            <h2 class="text-xl font-bold text-gray-800">${subject.title}</h2>
+                        </div>
+                        <div class="flex items-center gap-4 min-w-[200px]">
+                            <div class="flex-1">
+                                <div class="flex justify-between text-xs mb-1 font-medium">
+                                    <span id="label-${sIdx}">${progressPercent}%</span>
+                                    <span>${checkedCount}/${subject.topics.length}</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div id="bar-${sIdx}" class="bg-blue-500 h-2 rounded-full progress-transition" style="width: ${progressPercent}%"></div>
+                                </div>
+                            </div>
+                            <button onclick="toggleCollapse(${sIdx})" class="text-gray-400 hover:text-gray-600 transition">
+                                <i id="icon-${sIdx}" class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="content-${sIdx}" class="p-2 md:p-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                        ${subject.topics.map((topic, tIdx) => `
+                            <label class="flex items-start gap-3 p-2 rounded-lg hover:bg-blue-50 cursor-pointer transition group">
+                                <div class="relative flex items-center mt-1">
+                                    <input type="checkbox" 
+                                        class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                        onchange="updateProgress(${sIdx}, ${tIdx}, this.checked)"
+                                        ${storedProgress[`${sIdx}-${tIdx}`] ? 'checked' : ''}
+                                    >
+                                </div>
+                                <span class="text-sm text-gray-700 leading-tight transition group-hover:text-blue-900">${topic}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+
+            updateOverall();
+        }
+
+        function updateProgress(sIdx, tIdx, isChecked) {
+            const storedProgress = JSON.parse(localStorage.getItem('pcsc2025_progress') || '{}');
+            
+            if (isChecked) {
+                storedProgress[`${sIdx}-${tIdx}`] = true;
+            } else {
+                delete storedProgress[`${sIdx}-${tIdx}`];
+            }
+            
+            localStorage.setItem('pcsc2025_progress', JSON.stringify(storedProgress));
+            
+            // Atualiza barra da disciplina
+            const subject = editalData[sIdx];
+            const checkedCount = subject.topics.filter((_, i) => storedProgress[`${sIdx}-${i}`]).length;
+            const percent = Math.round((checkedCount / subject.topics.length) * 100);
+            
+            document.getElementById(`bar-${sIdx}`).style.width = `${percent}%`;
+            document.getElementById(`label-${sIdx}`).innerText = `${percent}%`;
+            
+            // Atualiza barra geral
+            updateOverall();
+        }
+
+        function updateOverall() {
+            const storedProgress = JSON.parse(localStorage.getItem('pcsc2025_progress') || '{}');
+            const totalTopics = editalData.reduce((acc, curr) => acc + curr.topics.length, 0);
+            const totalChecked = Object.keys(storedProgress).length;
+            const overallPercent = Math.round((totalChecked / totalTopics) * 100) || 0;
+
+            document.getElementById('overall-bar').style.width = `${overallPercent}%`;
+            document.getElementById('overall-percentage').innerText = `${overallPercent}%`;
+            document.getElementById('overall-count').innerText = `${totalChecked} de ${totalTopics} tópicos concluídos`;
+        }
+
+        function toggleCollapse(sIdx) {
+            const content = document.getElementById(`content-${sIdx}`);
+            const icon = document.getElementById(`icon-${sIdx}`);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.replace('fa-chevron-right', 'fa-chevron-down');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-right');
+            }
+        }
+
+        function resetProgress() {
+            if (confirm("Tem certeza que deseja apagar todo o seu progresso? Esta ação não pode ser desfeita.")) {
+                localStorage.removeItem('pcsc2025_progress');
+                location.reload();
+            }
+        }
+
+        // Inicializa a página
+        window.onload = init;
+    </script>
+</body>
+</html>
